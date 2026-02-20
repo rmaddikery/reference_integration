@@ -38,11 +38,11 @@
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-needs/modern.css?v=803738c0" />
   
   <!-- So that users can add custom icons -->
@@ -152,6 +152,13 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../verification/verification.html">
+    Verification Reports Summaries
+  </a>
+</li>
+
+
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../index.html">
     S-CORE Platform
@@ -176,13 +183,6 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../place_holder/communication.html">
     Communication
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../score_feo/docs/index.html">
-    FEO
   </a>
 </li>
 
@@ -319,6 +319,13 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../verification/verification.html">
+    Verification Reports Summaries
+  </a>
+</li>
+
+
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../index.html">
     S-CORE Platform
@@ -343,13 +350,6 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../place_holder/communication.html">
     Communication
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../score_feo/docs/index.html">
-    FEO
   </a>
 </li>
 
@@ -528,7 +528,7 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <div class="need_container docutils container" id="SNCB-a546cfe4">
+  <div class="need_container docutils container" id="SNCB-706302b1">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__config_mgt_plan">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -610,7 +610,11 @@ The complete list of project documents is defined in the <a class="reference int
 Ids are checked for uniqueness, see <a class="reference internal" href="../../../score_process/process/process_areas/configuration_management/guidance/configuration_process_req.html#gd_req__configuration_uid" title="gd_req__configuration_uid"><em class="xref need">Unique Id (gd_req__configuration_uid)</em></a>.
 sphinx-needs is also used to document the work products properties/attributes defined in the process area descriptions.
 The work products are stored in text or code files (these are identified by their filenames) within GitHub repositories.
-There is one <a class="reference external" href="https://GitHub.com/eclipse-score/score/">platform repository</a> and one repository for each module.</p>
+GitHub repositories are the realization of the Delivery Containers as described in <a class="reference internal" href="../../../score_process/process/general_concepts/score_building_blocks_concept.html#doc_concept__general_building_blocks" title="doc_concept__general_building_blocks"><em class="xref need">Building Block Concept (doc_concept__general_building_blocks)</em></a>.
+There is one <a class="reference external" href="https://GitHub.com/eclipse-score/score/">platform repository</a> and one repository for each set of Dependable elements
+one Delivery Team is responsibel for [TBD add link to role defintion].</p>
+<p>In S-CORE every repository shall have only one MODULE.bazel file which defines its version and dependencies.
+Exceptions from this may be needed for testing reasons only.</p>
 <p>For other artefacts these are either</p>
 <ul class="simple">
 <li><p>files - are identified by their path/filename (and configured also in GitHub)</p></li>
@@ -655,12 +659,13 @@ Only the technical lead is allowed to approve a merge into a release branch. The
 Baselines are created by using the GitHub “tag” function. The tag name shall correspond to
 the release branch name the tag is created, adding patch version and pre-release tag.
 See also <a class="reference internal" href="release_management.html#doc__platform_release_management_plan" title="doc__platform_release_management_plan"><em class="xref need">Release Management Plan (doc__platform_release_management_plan)</em></a>.</p>
-<p>As described in “Identification and Properties” above, there are several repositories for the modules and the platform integration.
+<p>As described in “Identification and Properties” above, there are several repositories.
 Baselines are created individually in these repositories, even a different version schema could be adopted.
 In case of dependent repositories, the repository dependent upon on has to be base-lined first, to be available
 to refer to this baseline when integrating it. That means that for example a platform baseline also
-documents the versions (baselines) of the modules the platform consists of. This can then also be seen in the platform release note.</p>
-<p>Every change in the release repository is also taken over into the main branch. The module development team
+documents the versions (baselines) of the delivery containers/repositories the platform consists of.
+This can then also be seen in the platform release note.</p>
+<p>Every change in the release branch is also taken over into the main branch. The Delivery Team
 can decide how to ensure this (e.g. by development in main and cherry-pick to release branch).</p>
 </section>
 <section id="backup-and-recovery">
