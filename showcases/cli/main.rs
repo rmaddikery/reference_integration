@@ -1,15 +1,21 @@
 use anyhow::{Context, Result};
+use clap::Parser;
 use serde::Deserialize;
-use std::{
-    collections::HashMap,
-    env, fs,
-    path::Path,
-};
+use std::{collections::HashMap, env, fs, path::Path};
 
-use cliclack::{clear_screen, intro, multiselect, outro, confirm};
-use std::time::Duration;
-use std::process::Command;
+use cliclack::{clear_screen, confirm, intro, multiselect, outro};
 use std::process::Child;
+use std::process::Command;
+use std::time::Duration;
+
+#[derive(Parser)]
+#[command(name = "SCORE CLI")]
+#[command(about = "SCORE CLI showcase entrypoint", long_about = None)]
+struct Args {
+    /// Examples to run (comma-separated names, or "all" to run all examples, skips interactive selection)
+    #[arg(long)]
+    examples: Option<String>,
+}
 
 #[derive(Debug, Deserialize, Clone)]
 struct AppConfig {
@@ -30,7 +36,7 @@ struct ScoreConfig {
 fn print_banner() {
     let color_code = "\x1b[38;5;99m";
     let reset_code = "\x1b[0m";
-    
+
     let banner = r#"
    ███████╗       ██████╗ ██████╗ ██████╗ ███████╗
    ██╔════╝      ██╔════╝██╔═══██╗██╔══██╗██╔════╝
@@ -39,26 +45,25 @@ fn print_banner() {
    ███████║      ╚██████╗╚██████╔╝██║  ██║███████╗
    ╚══════╝       ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝
 "#;
-    
+
     println!("{}{}{}", color_code, banner, reset_code);
 }
 
 fn pause_for_enter() -> Result<()> {
-    confirm("Press Enter to select examples to run...")
+    let result = confirm("Do you want to select examples to run?")
         .initial_value(true)
         .interact()?;
+    if !result {
+        outro("Falling back to the console. Goodbye!")?;
+        std::process::exit(0);
+    }
     Ok(())
 }
 
 fn main() -> Result<()> {
-    print_banner();
-    intro("WELCOME TO SHOWCASE ENTRYPOINT")?;
-    pause_for_enter()?;
+    let args = Args::parse();
 
-    clear_screen()?;
-
-    let root_dir = env::var("SCORE_CLI_INIT_DIR")
-        .unwrap_or_else(|_| "/showcases".to_string());
+    let root_dir = env::var("SCORE_CLI_INIT_DIR").unwrap_or_else(|_| "/showcases".to_string());
 
     let mut configs = Vec::new();
     visit_dir(Path::new(&root_dir), &mut configs)?;
@@ -67,50 +72,93 @@ fn main() -> Result<()> {
         anyhow::bail!("No *.score.json files found under {}", root_dir);
     }
 
-    // Create options for multiselect
-    let options: Vec<(usize, String, String)> = configs
-        .iter()
-        .enumerate()
-        .map(|(i, c)| (i, c.name.clone(), c.description.clone()))
-        .collect();
+    let selected = if let Some(examples_str) = args.examples {
+        // Non-interactive mode: use provided examples
+        let mut selected_indices = Vec::new();
 
-    let selected: Vec<usize> = multiselect("Select examples to run (use space to select (multiselect supported), enter to run examples):")
-        .items(&options)
-        .interact()?;
+        if examples_str.to_lowercase() == "all" {
+            // Select all available examples
+            selected_indices = (0..configs.len()).collect();
+            println!("Running all {} examples", configs.len());
+        } else {
+            // Match specific examples
+            let requested_examples: Vec<&str> = examples_str.split(',').map(|s| s.trim()).collect();
 
-    if selected.is_empty() {
-        outro("No examples selected. Goodbye!")?;
-        return Ok(());
-    }
+            for (i, config) in configs.iter().enumerate() {
+                if requested_examples.contains(&config.name.as_str()) {
+                    selected_indices.push(i);
+                }
+            }
+
+            if selected_indices.is_empty() {
+                anyhow::bail!(
+                    "No examples found matching: {}. Available examples: {}",
+                    examples_str,
+                    configs
+                        .iter()
+                        .map(|c| c.name.as_str())
+                        .collect::<Vec<_>>()
+                        .join(", ")
+                );
+            }
+
+            println!("Running examples: {}", examples_str);
+        }
+
+        selected_indices
+    } else {
+        // Interactive mode
+        print_banner();
+        intro("WELCOME TO SHOWCASE ENTRYPOINT")?;
+        pause_for_enter()?;
+
+        clear_screen()?;
+
+        // Create options for multiselect
+        let options: Vec<(usize, String, String)> = configs
+            .iter()
+            .enumerate()
+            .map(|(i, c)| (i, c.name.clone(), c.description.clone()))
+            .collect();
+
+        let selected: Vec<usize> = multiselect("Select examples to run (use space to select (multiselect supported), enter to run examples):")
+            .items(&options)
+            .interact()?;
+
+        if selected.is_empty() {
+            outro("No examples selected. Goodbye!")?;
+            return Ok(());
+        }
+
+        selected
+    };
 
     for index in selected {
         run_score(&configs[index])?;
     }
 
     outro("All done!")?;
-    
+
     Ok(())
 }
 
 fn visit_dir(dir: &Path, configs: &mut Vec<ScoreConfig>) -> Result<()> {
-    for entry in fs::read_dir(dir)
-        .with_context(|| format!("Failed to read directory {:?}", dir))?
-    {
+    for entry in fs::read_dir(dir).with_context(|| format!("Failed to read directory {:?}", dir))? {
         let entry = entry?;
         let path = entry.path();
-        
+
         if path.is_symlink() {
             continue;
         }
-        
+
         if path.is_dir() {
             visit_dir(&path, configs)?;
             continue;
         }
-        
+
         if is_score_file(&path) {
-            let content = fs::read_to_string(&path)
-                .with_context(|| format!("Failed reading {:?}", path))?;
+            let content =
+                fs::read_to_string(&path).with_context(|| format!("Failed reading {:?}", path))?;
             let value: serde_json::Value = serde_json::from_str(&content)
                 .with_context(|| format!("Invalid JSON in {:?}", path))?;
             if value.is_array() {
@@ -146,7 +194,12 @@ fn run_score(config: &ScoreConfig) -> Result<()> {
 
         if let Some(delay_secs) = app.delay {
             if delay_secs > 0 {
-                println!("{:?}  App {}: waiting {} seconds before start...", now.elapsed(), i + 1, delay_secs);
+                println!(
+                    "{:?}  App {}: waiting {} seconds before start...",
+                    now.elapsed(),
+                    i + 1,
+                    delay_secs
+                );
                 std::thread::sleep(Duration::from_secs(delay_secs));
             }
         }
