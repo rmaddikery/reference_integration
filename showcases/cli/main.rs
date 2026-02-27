@@ -1,3 +1,15 @@
+// *******************************************************************************
+// Copyright (c) 2026 Contributors to the Eclipse Foundation
+//
+// See the NOTICE file(s) distributed with this work for additional
+// information regarding copyright ownership.
+//
+// This program and the accompanying materials are made available under the
+// terms of the Apache License Version 2.0 which is available at
+// <https://www.apache.org/licenses/LICENSE-2.0>
+//
+// SPDX-License-Identifier: Apache-2.0
+// *******************************************************************************
 use anyhow::{Context, Result};
 use clap::Parser;
 use serde::Deserialize;
@@ -94,11 +106,7 @@ fn main() -> Result<()> {
                 anyhow::bail!(
                     "No examples found matching: {}. Available examples: {}",
                     examples_str,
-                    configs
-                        .iter()
-                        .map(|c| c.name.as_str())
-                        .collect::<Vec<_>>()
-                        .join(", ")
+                    configs.iter().map(|c| c.name.as_str()).collect::<Vec<_>>().join(", ")
                 );
             }
 
@@ -121,9 +129,10 @@ fn main() -> Result<()> {
             .map(|(i, c)| (i, c.name.clone(), c.description.clone()))
             .collect();
 
-        let selected: Vec<usize> = multiselect("Select examples to run (use space to select (multiselect supported), enter to run examples):")
-            .items(&options)
-            .interact()?;
+        let selected: Vec<usize> =
+            multiselect("Select examples to run (use space to select (multiselect supported), enter to run examples):")
+                .items(&options)
+                .interact()?;
 
         if selected.is_empty() {
             outro("No examples selected. Goodbye!")?;
@@ -157,17 +166,16 @@ fn visit_dir(dir: &Path, configs: &mut Vec<ScoreConfig>) -> Result<()> {
         }
 
         if is_score_file(&path) {
-            let content =
-                fs::read_to_string(&path).with_context(|| format!("Failed reading {:?}", path))?;
-            let value: serde_json::Value = serde_json::from_str(&content)
-                .with_context(|| format!("Invalid JSON in {:?}", path))?;
+            let content = fs::read_to_string(&path).with_context(|| format!("Failed reading {:?}", path))?;
+            let value: serde_json::Value =
+                serde_json::from_str(&content).with_context(|| format!("Invalid JSON in {:?}", path))?;
             if value.is_array() {
-                let found: Vec<ScoreConfig> = serde_json::from_value(value)
-                    .with_context(|| format!("Invalid JSON array in {:?}", path))?;
+                let found: Vec<ScoreConfig> =
+                    serde_json::from_value(value).with_context(|| format!("Invalid JSON array in {:?}", path))?;
                 configs.extend(found);
             } else {
-                let config: ScoreConfig = serde_json::from_value(value)
-                    .with_context(|| format!("Invalid JSON in {:?}", path))?;
+                let config: ScoreConfig =
+                    serde_json::from_value(value).with_context(|| format!("Invalid JSON in {:?}", path))?;
                 configs.push(config);
             }
         }

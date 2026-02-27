@@ -1,3 +1,15 @@
+// *******************************************************************************
+// Copyright (c) 2026 Contributors to the Eclipse Foundation
+//
+// See the NOTICE file(s) distributed with this work for additional
+// information regarding copyright ownership.
+//
+// This program and the accompanying materials are made available under the
+// terms of the Apache License Version 2.0 which is available at
+// <https://www.apache.org/licenses/LICENSE-2.0>
+//
+// SPDX-License-Identifier: Apache-2.0
+// *******************************************************************************
 //! KVS instance test helpers.
 
 use crate::internals::persistency::kvs_parameters::KvsParameters;
@@ -28,9 +40,7 @@ pub fn kvs_instance(kvs_parameters: KvsParameters) -> Result<Kvs, ErrorCode> {
     } else if let Some(snapshot_max_count) = kvs_parameters.snapshot_max_count {
         // Configure snapshot_max_count via backend
         // change back to snapshot_max_count, if https://github.com/eclipse-score/persistency/issues/222 is resolved.
-        let backend = JsonBackendBuilder::new()
-            .snapshot_max_count(snapshot_max_count)
-            .build();
+        let backend = JsonBackendBuilder::new().snapshot_max_count(snapshot_max_count).build();
         builder = builder.backend(Box::new(backend));
     }
 

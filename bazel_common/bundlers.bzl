@@ -1,10 +1,21 @@
-load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
+# *******************************************************************************
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+# *******************************************************************************
 load("@rules_pkg//pkg:mappings.bzl", "pkg_files")
+load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
 
+def score_pkg_bundle(name, bins, config_data = None, package_dir = None, other_package_files = [], custom_layout = {}):
+    """ Creates a reusable bundle by chaining Bazel packaging rules:
 
-def score_pkg_bundle(name, bins, config_data= None, package_dir = None, other_package_files = [], custom_layout = {}):
-    """
-    Creates a reusable bundle by chaining Bazel packaging rules:
       - Collects binaries and config files into a pkg_files target, renaming them into subdirectories.
       - Packs them into a tar archive using pkg_tar, optionally with additional package files and a custom package directory.
       - Extracts the tar archive using a custom untar rule.
@@ -23,11 +34,15 @@ def score_pkg_bundle(name, bins, config_data= None, package_dir = None, other_pa
                     "//app:data.txt": "resources/data.txt",
                     "//lib:helper.sh": "scripts/helper.sh",
                 }
+    Returns:
+        A dict with the following keys:
+        - "all_files": Label of the pkg_files target that collects all files with their renamed paths.
+        - "tar": Label of the pkg_tar target that creates the tar archive.
+        - "tree": Label of the untar target that extracts the tar archive.
     """
 
     all_files_name = name + "_pkg_files"
     bundle_name = name + "_pkg_tar"
-    all_cfg = name + "_configs"
     untar_name = name
 
     rename_dict = {}
@@ -42,17 +57,16 @@ def score_pkg_bundle(name, bins, config_data= None, package_dir = None, other_pa
     if config_data != None:
         config_data_arr = config_data
 
-
     if custom_layout == None:
         custom_layout = {}
 
     for label, dst in custom_layout.items():
         rename_dict[label] = "data/" + name + "/" + dst
-    
+
     # Step 1: pkg_files
     pkg_files(
         name = all_files_name,
-        srcs = bins + config_data_arr  + list(custom_layout.keys()),
+        srcs = bins + config_data_arr + list(custom_layout.keys()),
         renames = rename_dict,
         visibility = ["//visibility:public"],
     )
@@ -79,7 +93,6 @@ def score_pkg_bundle(name, bins, config_data= None, package_dir = None, other_pa
         "tar": ":" + bundle_name,
         "tree": ":" + untar_name,
     }
-
 
 def _untar_impl(ctx):
     out = ctx.actions.declare_directory(ctx.label.name)

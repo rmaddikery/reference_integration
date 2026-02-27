@@ -1,5 +1,5 @@
-//
-// Copyright (c) 2025 Contributors to the Eclipse Foundation
+// *******************************************************************************
+// Copyright (c) 2026 Contributors to the Eclipse Foundation
 //
 // See the NOTICE file(s) distributed with this work for additional
 // information regarding copyright ownership.
@@ -9,7 +9,7 @@
 // <https://www.apache.org/licenses/LICENSE-2.0>
 //
 // SPDX-License-Identifier: Apache-2.0
-//
+// *******************************************************************************
 use kyron::core::types::UniqueWorkerId;
 use kyron::prelude::ThreadParameters as AsyncRtThreadParameters;
 use kyron::runtime::*;
@@ -138,34 +138,24 @@ impl Runtime {
                 for dedicated_worker in dedicated_workers {
                     // Create thread parameters object.
                     let mut async_rt_thread_params = AsyncRtThreadParameters::default();
-                    if let Some(thread_priority) =
-                        dedicated_worker.thread_parameters.thread_priority
-                    {
+                    if let Some(thread_priority) = dedicated_worker.thread_parameters.thread_priority {
                         async_rt_thread_params = async_rt_thread_params.priority(thread_priority);
                     }
-                    if let Some(thread_affinity) =
-                        &dedicated_worker.thread_parameters.thread_affinity
-                    {
+                    if let Some(thread_affinity) = &dedicated_worker.thread_parameters.thread_affinity {
                         async_rt_thread_params = async_rt_thread_params.affinity(thread_affinity);
                     }
-                    if let Some(thread_stack_size) =
-                        dedicated_worker.thread_parameters.thread_stack_size
-                    {
-                        async_rt_thread_params =
-                            async_rt_thread_params.stack_size(thread_stack_size);
+                    if let Some(thread_stack_size) = dedicated_worker.thread_parameters.thread_stack_size {
+                        async_rt_thread_params = async_rt_thread_params.stack_size(thread_stack_size);
                     }
-                    if let Some(thread_scheduler) =
-                        dedicated_worker.thread_parameters.thread_scheduler
-                    {
-                        async_rt_thread_params =
-                            async_rt_thread_params.scheduler_type(thread_scheduler);
+                    if let Some(thread_scheduler) = dedicated_worker.thread_parameters.thread_scheduler {
+                        async_rt_thread_params = async_rt_thread_params.scheduler_type(thread_scheduler);
                     }
 
                     // Create `UniqueWorkerId`.
                     let unique_worker_id = UniqueWorkerId::from(&dedicated_worker.id);
 
-                    exec_engine_builder = exec_engine_builder
-                        .with_dedicated_worker(unique_worker_id, async_rt_thread_params);
+                    exec_engine_builder =
+                        exec_engine_builder.with_dedicated_worker(unique_worker_id, async_rt_thread_params);
                 }
             }
 
@@ -173,8 +163,6 @@ impl Runtime {
             async_rt_builder = builder;
         }
 
-        async_rt_builder
-            .build()
-            .expect("Failed to build async runtime")
+        async_rt_builder.build().expect("Failed to build async runtime")
     }
 }
