@@ -294,5 +294,5 @@ pci/pci_debug2.so                        # Enhanced PCI debugging support
 [perms=644] /usr/bin/etc/log-channels.json = datarouter_integration/etc/log-channels.json
 
 # Common showcases bundle
-[perms=777] /showcases = ${BUNDLE_PATH}
+[perms=777] / = ${BUNDLE_PATH}
 
