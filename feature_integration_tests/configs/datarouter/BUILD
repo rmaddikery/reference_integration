@@ -10,24 +10,17 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
-exports_files(
-    [
-        "dlt_config_qnx_x86_64.json",
-        "dlt_config_x86_64.json",
-        "qemu_bridge_config.json",
-    ],
-)
 
 exports_files([
     "etc/logging.json",
-    "etc/mw_com_config.json",
+    "etc/log-channels.json",
 ])
 
 filegroup(
     name = "etc_configs",
     srcs = [
         "etc/logging.json",
-        "etc/mw_com_config.json",
+        "etc/log-channels.json",
     ],
     visibility = ["//visibility:public"],
 )

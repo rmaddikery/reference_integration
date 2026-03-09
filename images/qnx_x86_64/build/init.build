@@ -14,7 +14,7 @@
 
 ###############################################################################
 #
-# Example image built based on minimal configuration from QNX 
+# Example image built based on minimal configuration from QNX
 #
 ###############################################################################
 
@@ -25,7 +25,7 @@
     # Use startup-x86 by default
     startup-x86 -v -D8250..115200 -zz   # Start x86 kernel with verbose output, serial console at 115200 baud
     PATH=/proc/boot                      # Set executable search path to boot directory
-    LD_LIBRARY_PATH=/proc/boot           # Set library search path to boot directory  
+    LD_LIBRARY_PATH=/proc/boot           # Set library search path to boot directory
     [+keeplinked] procnto-smp-instr      # Keep process manager linked and instrumented for SMP
 }
 
@@ -96,6 +96,6 @@ devb-eide                          # Block device driver for IDE/SATA hard drive
                                         # Required for mounting QNX6 file systems from disk partitions
 
 # Orchestrator example needed
-[type=link] /data=/tmp_ram 
+[type=link] /data=/tmp_ram
 
 [+include] ${MAIN_BUILD_FILE_DIR}/system.build   # Include additional system build configurations

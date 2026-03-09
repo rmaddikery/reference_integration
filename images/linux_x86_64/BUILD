@@ -28,11 +28,30 @@ sh_binary(
     },
 )
 
+pkg_tar(
+    name = "datarouter_bin_tar",
+    srcs = ["@score_logging//score/datarouter:datarouter"],
+    mode = "0755",
+    package_dir = "/usr/bin",
+)
+
+pkg_tar(
+    name = "datarouter_etc_tar",
+    srcs = [
+        "//feature_integration_tests/configs/datarouter:etc/logging.json",
+        "//feature_integration_tests/configs/datarouter:etc/log-channels.json",
+    ],
+    mode = "0644",
+    package_dir = "/usr/bin/etc",
+)
+
 oci_image(
     name = "image",
     base = "@ubuntu_22_04",
     tars = [
         "//showcases:showcases_pkg_tar",
+        ":datarouter_bin_tar",
+        ":datarouter_etc_tar",
     ],
 )
 
