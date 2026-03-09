@@ -2,5 +2,9 @@
   {
     "version": "main",
     "url": "https://rmaddikery.github.io/reference_integration/main/"
+  },
+  {
+    "version": "pr-1",
+    "url": "https://rmaddikery.github.io/reference_integration/pr-1/"
   }
 ]
