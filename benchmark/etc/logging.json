@@ -1,0 +1,17 @@
+{
+  "appId": "SCBL",
+  "appDesc": "score_bench_log",
+  "logLevel": "kInfo",
+  "logLevelThresholdConsole": "kInfo",
+  "logMode": "kRemote",
+  "contextConfigs":[
+        {
+            "name": "ESBL",
+            "logLevel": "kInfo"
+        },
+        {
+            "name": "DSBL"
+       	}
+    ],
+  "logFilePath": "/tmp_ram"
+}

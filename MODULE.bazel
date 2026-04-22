@@ -40,6 +40,7 @@ include("//bazel_common:score_modules_target_sw.MODULE.bazel")
 # Score test images
 include("//bazel_common:score_images.MODULE.bazel")
 
+bazel_dep(name = "google_benchmark", version = "1.9.4")
 bazel_dep(name = "rules_boost", repo_name = "com_github_nelhage_rules_boost")
 archive_override(
     module_name = "rules_boost",
