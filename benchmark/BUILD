@@ -1,12 +1,12 @@
 load(":opt_transition.bzl", "opt_binary")
 
 cc_binary(
-  name = "scr_bench_log_impl",
+  name = "scr_bench_log",
   srcs = [
     "scr_bench_log.cpp"
   ],
   data = ["etc/logging.json"],
-  visibility = ["//visibility:private"],
+  visibility = ["//visibility:public"],
   deps = [
     "@google_benchmark//:benchmark",
     "@google_benchmark//:benchmark_main",
@@ -16,8 +16,8 @@ cc_binary(
 
 # Forces the benchmark to be built with -c opt even when the rest is debug
 opt_binary(
-  name = "scr_bench_log",
-  binary = ":scr_bench_log_impl",
+  name = "scr_bench_log_opt",
+  binary = ":scr_bench_log",
   data = ["etc/logging.json"],
   visibility = ["//visibility:public"],
 )
