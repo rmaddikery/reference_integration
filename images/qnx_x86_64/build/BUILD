@@ -49,6 +49,8 @@ qnx_ifs(
         ":scripts",
         ":system.build",
         ":system_dir",
+        "//benchmark:scr_bench_log",
+        "//benchmark:etc_configs",
         "//feature_integration_tests/configs:etc_configs",
         "//feature_integration_tests/configs/datarouter:etc_configs",
         "//showcases",
@@ -57,6 +59,7 @@ qnx_ifs(
     ],
     build_file = "init.build",
     ext_repo_maping = {
+        "BENCHMARK_PATH": "$(location //benchmark:scr_bench_log)",
         "BUNDLE_PATH": "$(location //showcases:showcases)",
         "DATAROUTER_PATH": "$(location @score_logging//score/datarouter:datarouter)",
     },

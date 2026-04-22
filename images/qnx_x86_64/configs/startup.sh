@@ -82,4 +82,10 @@ mkdir -p /tmp_ram/tmp_discovery
 ln -sP  /tmp_ram/tmp_discovery /tmp_discovery
 
 /proc/boot/sshd -f /var/ssh/sshd_config # Start SSH daemon with specified configuration file
-/showcases/bin/cli                     # Start the CLI application from the mounted showcases directory
+#/showcases/bin/cli &                   # Start the CLI application in background
+
+mkdir -p /tmp_ram/benchmark
+mkdir -p /tmp_ram/benchmark/etc
+
+echo "---> Starting interactive shell on serial console"
+exec /bin/sh                           # Start interactive shell for serial console access

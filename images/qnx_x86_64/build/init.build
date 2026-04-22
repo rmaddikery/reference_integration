@@ -14,7 +14,7 @@
 
 ###############################################################################
 #
-# Example image built based on minimal configuration from QNX 
+# Example image built based on minimal configuration from QNX
 #
 ###############################################################################
 
@@ -25,7 +25,7 @@
     # Use startup-x86 by default
     startup-x86 -v -D8250..115200 -zz   # Start x86 kernel with verbose output, serial console at 115200 baud
     PATH=/proc/boot                      # Set executable search path to boot directory
-    LD_LIBRARY_PATH=/proc/boot           # Set library search path to boot directory  
+    LD_LIBRARY_PATH=/proc/boot           # Set library search path to boot directory
     [+keeplinked] procnto-smp-instr      # Keep process manager linked and instrumented for SMP
 }
 
@@ -39,8 +39,8 @@
     SYSNAME=nto                          # Set system name to "nto" (Neutrino)
     TERM=qansi                           # Set terminal type to QNX ANSI
 
-    devc-ser8250 &                       # Start serial driver in background
-    waitfor /dev/ser1                    # Wait for serial device to be available
+    devc-ser8250 -e -b115200 0x3f8,4 &   # Start serial driver on COM1 (I/O 0x3f8, IRQ 4)
+    waitfor /dev/ser1 5                  # Wait for serial device with 5 second timeout
     reopen /dev/ser1                     # Reopen serial device for console I/O
 
     display_msg Placeholder for startup script  # Display startup message
@@ -96,6 +96,6 @@ devb-eide                          # Block device driver for IDE/SATA hard drive
                                         # Required for mounting QNX6 file systems from disk partitions
 
 # Orchestrator example needed
-[type=link] /data=/tmp_ram 
+[type=link] /data=/tmp_ram
 
 [+include] ${MAIN_BUILD_FILE_DIR}/system.build   # Include additional system build configurations

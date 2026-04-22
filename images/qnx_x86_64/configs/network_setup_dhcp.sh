@@ -95,6 +95,6 @@ sysctl -w net.inet.icmp.bmcastecho=1 > /dev/null        # Enable ICMP broadcast 
 # multicast traffic ('224.0.0.0/4') out the guest network
 # interface so it reaches the host via the QEMU TAP device.
 echo "Adding multicast route"
-route add -net 224.0.0.0 -netmask 240.0.0.0 -interface vtnet0
+/proc/boot/route add -net 224.0.0.0 -netmask 240.0.0.0 -interface vtnet0
 
 echo "---> Network configuration completed"
