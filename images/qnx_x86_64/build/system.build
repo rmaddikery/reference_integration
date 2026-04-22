@@ -63,6 +63,18 @@ libpam.so.2                              # Pluggable Authentication Modules libr
 # Core file system utilities - most are provided by toybox (minimal Unix utilities)
 
 [type=link] /bin/ls=/proc/boot/ls        # Link ls to IFS version for compatibility
+[type=link] /bin/mkdir=/proc/boot/mkdir  # Link mkdir to /bin for PATH access
+[type=link] /bin/cat=/proc/boot/cat      # Link cat to /bin for PATH access
+[type=link] /bin/rm=/proc/boot/rm        # Link rm to /bin for PATH access
+[type=link] /bin/grep=/proc/boot/grep    # Link grep to /bin for PATH access
+[type=link] /bin/date=/proc/boot/date    # Link date to /bin for PATH access
+[type=link] /bin/kill=/proc/boot/slay    # Link kill to slay for PATH access
+[type=link] /bin/nc=/proc/boot/nc        # Link nc to /bin for PATH access
+[type=link] /bin/tcpdump=/proc/boot/tcpdump  # Link tcpdump to /bin for PATH access
+[type=link] /bin/pidin=/proc/boot/pidin  # Link pidin to /bin for PATH access
+[type=link] /bin/awk=/proc/boot/awk      # Link awk to /bin for PATH access
+[type=link] /bin/ifconfig=/proc/boot/ifconfig  # Link ifconfig to /bin for PATH access
+[type=link] /bin/mkfifo=/proc/boot/mkfifo  # Link mkfifo to /bin for PATH access
 # Note: /bin/sh symlink already defined in init.build as /proc/boot/ksh
 toybox                                   # Minimal Unix utilities collection (replaces many GNU tools)
 [type=link] cp=toybox                    # Copy files and directories
@@ -287,6 +299,10 @@ pci/pci_debug2.so                        # Enhanced PCI debugging support
 [perms=777] /usr/bin/datarouter/datarouter = ${DATAROUTER_PATH}
 [perms=644] /usr/bin/datarouter/etc/logging.json = ${MAIN_BUILD_FILE_DIR}/../../../feature_integration_tests/configs/datarouter/etc/logging.json
 [perms=644] /usr/bin/datarouter/etc/log-channels.json = ${MAIN_BUILD_FILE_DIR}/../../../feature_integration_tests/configs/datarouter/etc/log-channels.json
+
+[perms=777] /usr/bin/benchmark/scr_bench_log = ${BENCHMARK_PATH}
+[perms=777] /usr/bin/benchmark/scr_bench_log_opt = ${BENCHMARK_OPT_PATH}
+[perms=644] /usr/bin/benchmark/etc/logging.json = ${MAIN_BUILD_FILE_DIR}/../../../benchmark/etc/logging.json
 
 # Common showcases bundle
 [perms=777] / = ${BUNDLE_PATH}
